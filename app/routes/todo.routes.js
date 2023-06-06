@@ -2,8 +2,9 @@ module.exports = (app) => {
     const todos = require('../controllers/todo.controller.js');
 
     // create a new todo
-    app.post('/todo', todos.create);
+    app.post('/todos', todos.create);
 
+    
     //retrieve all todos
     app.get('/todos', todos.findAll);
 
@@ -15,4 +16,5 @@ module.exports = (app) => {
 
     // delete a todo by id
     app.delete('/todos/:id', todos.delete);
+    
 }

@@ -3,6 +3,13 @@ const bodyParser = require('body-parser');
 
 // create express
 const app = express();
+// parser application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+// parser application/json
+app.use(bodyParser.json());
 
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
@@ -21,23 +28,15 @@ mongoose.connect(dbConfig.url, {
     process.exit();
 });
 
-// parser application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-// parser application/json
-app.use(bodyParser.json());
-
-
-
-
 // define a simple route
 app.get('/', (req, res) => {
     res.json({
         message: "Welcome to the app"
     });
 });
+
+
+require('./app/routes/todo.routes.js')(app);
 
 // listen for the require
 app.listen(4000, () => {
