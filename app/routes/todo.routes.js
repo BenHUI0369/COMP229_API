@@ -9,7 +9,7 @@ module.exports = (app) => {
     app.get('/todos', todos.findAll);
 
     // retrieve a single todo by id
-    app.get('todos/:id', todos.findOne);
+    app.get('/todos/:id', todos.findOne);
 
     // update a todo with id
     app.put('/todos/:id', todos.update);

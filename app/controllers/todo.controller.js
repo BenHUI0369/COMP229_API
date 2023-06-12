@@ -17,6 +17,7 @@ exports.create = (req, res) => {
     });
 
     //save todo in the database
+    //save is the method for mongo db
     todo.save()
     .then(data => {
         res.send(data);
@@ -29,6 +30,7 @@ exports.create = (req, res) => {
 
 // retrieve and return all todos from the database
 exports.findAll = (req, res) => {
+    //find is the mongo db method
     Todo.find()
     .then(todos => {
         res.send(todos);
@@ -41,7 +43,8 @@ exports.findAll = (req, res) => {
 
 // find a single todo with an id
 exports.findOne = (req, res) => {
-    Todo.findById(req.params.id)
+    const id = req.params.id;
+    Todo.findById(id)
     .then(todo => {
         if (!todo) {
             return res.status(404).send({
@@ -71,8 +74,8 @@ exports.update = (req, res) => {
     }
 
     // find todo and update it with the request body
-    Todo.findByIdUpdate(req.params.id, {
-        title: req.body.name || "Untitled Todo",
+    Todo.findByIdAndUpdate(req.params.id, {
+        name: req.body.name || "Untitled Todo",
         description: req.body.description
     }, {new: true})
     .then(todo => {
