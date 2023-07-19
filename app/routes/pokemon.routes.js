@@ -1,7 +1,7 @@
 module.exports = (app) => {
     const pokemons = require('../controllers/pokemon.controller.js');
 
-    // create a new todo
+    // create a new pokemon
     app.post('/pokemons', pokemons.create);
 
     // find by pokemon type
@@ -13,13 +13,13 @@ module.exports = (app) => {
     //retrieve all pokemons
     app.get('/pokemons', pokemons.findAll);
 
-    // retrieve a single todo by id
+    // retrieve a single pokemon by id
     app.get('/pokemons/:id', pokemons.findOne);
 
-    // update a todo with id
+    // update a pokemon with id
     app.put('/pokemons/:id', pokemons.update);
 
-    // delete a todo by id
+    // delete a pokemon by id
     app.delete('/pokemons/:id', pokemons.delete);
 
     
