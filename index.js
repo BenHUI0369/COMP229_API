@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // create express
 const app = express();
@@ -10,6 +11,11 @@ app.use(bodyParser.urlencoded({
 
 // parser application/json
 app.use(bodyParser.json());
+
+// user cors to allow getting data from web server
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
@@ -36,7 +42,7 @@ app.get('/', (req, res) => {
 });
 
 
-require('./app/routes/todo.routes.js')(app);
+require('./app/routes/pokemon.routes.js')(app);
 
 // listen for the require
 app.listen(4000, () => {
