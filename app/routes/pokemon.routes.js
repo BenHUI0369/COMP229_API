@@ -1,27 +1,29 @@
 module.exports = (app) => {
-    const pokemons = require('../controllers/pokemon.controller.js');
+  const pokemons = require("../controllers/pokemon.controller.js");
 
-    // create a new pokemon
-    app.post('/pokemons', pokemons.create);
+  const admins = require("../controllers/admin.controller.js");
 
-    // find by pokemon type
-    app.get('/pokemons/find_1', pokemons.findByPokemonTypeMulti);
+  // get admin username and password
+  app.post("/pokemons/authenticate", admins.loginUserControllerFn);
 
-    // find by pokemon type
-    app.get('/pokemons/find_2', pokemons.findByPokemonTypeUnique);
-    
-    //retrieve all pokemons
-    app.get('/pokemons', pokemons.findAll);
+  // create a new pokemon
+  app.post("/pokemons", pokemons.create);
 
-    // retrieve a single pokemon by id
-    app.get('/pokemons/:id', pokemons.findOne);
+  // find by pokemon type
+  app.get("/pokemons/find_1", pokemons.findByPokemonTypeMulti);
 
-    // update a pokemon with id
-    app.put('/pokemons/:id', pokemons.update);
+  // find by pokemon type
+  app.get("/pokemons/find_2", pokemons.findByPokemonTypeUnique);
 
-    // delete a pokemon by id
-    app.delete('/pokemons/:id', pokemons.delete);
+  //retrieve all pokemons
+  app.get("/pokemons", pokemons.findAll);
 
-    
-    
-}
+  // retrieve a single pokemon by id
+  app.get("/pokemons/:id", pokemons.findOne);
+
+  // update a pokemon with id
+  app.put("/pokemons/:id", pokemons.update);
+
+  // delete a pokemon by id
+  app.delete("/pokemons/:id", pokemons.delete);
+};
