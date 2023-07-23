@@ -4,7 +4,7 @@ const Pokemon = require('../models/pokemon.model');
 // create and save a new pokemon
 exports.create = (req, res) => {
     // validate request
-    if(!req.body.description) {
+    if(!req.body) {
         return res.status(400).send({
             message: "Pokemon description can not be empty"
         });
@@ -15,7 +15,7 @@ exports.create = (req, res) => {
         pokemonID: req.body.pokemonID,
         name: req.body.name || "Untitled Pokemon",
         pokemonType: req.body.pokemonType || "Undefined Type",
-        description: req.body.description
+        description: req.body.description || "No Description"
     });
 
     //save pokemon in the database
