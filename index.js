@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const routes = require('./app/routes');
+require('dotenv').config();
 
-// create express
+// create express   
 const app = express();
 // parser application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
@@ -41,8 +43,10 @@ app.get('/', (req, res) => {
     });
 });
 
+app.use(routes);
 
-require('./app/routes/pokemon.routes.js')(app);
+//require('./app/routes/pokemon.routes.js')(app);
+
 
 // listen for the require
 app.listen(4000, () => {

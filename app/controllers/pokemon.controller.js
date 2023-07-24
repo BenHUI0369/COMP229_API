@@ -2,7 +2,7 @@
 const Pokemon = require('../models/pokemon.model');
 
 // create and save a new pokemon
-exports.create = (req, res) => {
+ let create = (req, res) => {
     // validate request
     if(!req.body) {
         return res.status(400).send({
@@ -31,7 +31,7 @@ exports.create = (req, res) => {
 };
 
 // retrieve and return all pokemons from the database
-exports.findAll = (req, res) => {
+let findAll = (req, res) => {
     //find is the mongo db method
     Pokemon.find()
     .then(pokemons => {
@@ -44,7 +44,7 @@ exports.findAll = (req, res) => {
 };
 
 // find a single pokemon with an id
-exports.findOne = (req, res) => {
+let findOne = (req, res) => {
     const id = req.params.id;
     Pokemon.findById(id)
     .then(pokemon => {
@@ -67,7 +67,7 @@ exports.findOne = (req, res) => {
 };
 
 //update a pokemon identified by the id in the request
-exports.update = (req, res) => {
+let update = (req, res) => {
     //validate request
     if(!req.body.description) {
         return res.status(400).send({
@@ -102,7 +102,7 @@ exports.update = (req, res) => {
 };
 
 // delete a pokemon with the specified id in the request
-exports.delete = (req, res) => {
+let deletePokemon = (req, res) => {
     Pokemon.findByIdAndRemove(req.params.id)
     .then(pokemon => {
         if (!pokemon) {
@@ -127,7 +127,7 @@ exports.delete = (req, res) => {
 
 // find pokemon by selected type, it will return all pokemon contains the selected type.
 // [Normal, Fire, Water, Grass, Electric, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dark, Dragon, Steel and Fairy]
-exports.findByPokemonTypeMulti = (req, res) => {
+let findByPokemonTypeMulti = (req, res) => {
     // passing the pokemonType to find method
     let findType = req.body.pokemonType;
     Pokemon.find({pokemonType:  { $in: findType }}).then(pokemons => {
@@ -140,7 +140,7 @@ exports.findByPokemonTypeMulti = (req, res) => {
 }
 
 
-exports.findByPokemonTypeUnique = (req, res) => {
+let findByPokemonTypeUnique = (req, res) => {
     // passing the pokemonType to find method
     let findType = req.body.pokemonType;
     Pokemon.find({pokemonType:  { $all: findType }}).then(pokemons => {
@@ -151,3 +151,13 @@ exports.findByPokemonTypeUnique = (req, res) => {
         });
     });
 }
+
+module.exports = {
+    create,
+    findAll,
+    findOne,
+    update,
+    deletePokemon,
+    findByPokemonTypeMulti,
+    findByPokemonTypeUnique
+};
