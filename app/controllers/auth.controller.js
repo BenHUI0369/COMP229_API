@@ -32,6 +32,7 @@ const signup = errorHandler(withTransaction(async (req, res, session) => {
     };
 }));
 
+/* without time limit which cause loop for 401 error forever
 const login = errorHandler(withTransaction(async (req, res, session) => {
     const userDoc = await models.User
         .findOne({username: req.body.username})
@@ -59,6 +60,59 @@ const login = errorHandler(withTransaction(async (req, res, session) => {
         permission: userDoc.permission
     };
 }));
+*/
+
+const login = errorHandler(withTransaction(async (req, res, session) => {
+    const userDocPromise = models.User
+      .findOne({ username: req.body.username })
+      .select('+password')
+      .exec();
+  
+    // Set a time limit in milliseconds for the userDoc operation
+    const timeLimit = 3000; // 5 seconds
+  
+    try {
+      const userDoc = await Promise.race([
+        userDocPromise,
+        new Promise((resolve, reject) => {
+          setTimeout(() => reject(new Error('User lookup timed out')), timeLimit);
+        })
+      ]);
+  
+      if (!userDoc) {
+        throw new HttpError(401, 'Wrong username or password');
+      }
+  
+      await verifyPassword(userDoc.password, req.body.password);
+  
+      const refreshTokenDoc = models.RefreshToken({
+        owner: userDoc.id,
+        permission: userDoc.permission
+      });
+  
+      await refreshTokenDoc.save({ session });
+  
+      const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id, userDoc.permission);
+      const accessToken = createAccessToken(userDoc.id);
+  
+      return {
+        id: userDoc.id,
+        accessToken,
+        refreshToken,
+        permission: userDoc.permission
+      };
+    } catch (error) {
+      // Handle the timeout error and other errors here
+      if (error.message === 'User lookup timed out') {
+        // Handle timeout error
+        throw new HttpError(500, 'User lookup timed out');
+      } else {
+        // Handle other errors
+        throw new HttpError(500, 'Internal server error');
+      }
+    }
+  }));
+  
 
 const newRefreshToken = errorHandler(withTransaction(async (req, res, session) => {
     const currentRefreshToken = await validateRefreshToken(req.body.refreshToken);
