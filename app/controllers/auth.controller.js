@@ -10,7 +10,8 @@ const signup = errorHandler(withTransaction(async (req, res, session) => {
         username: req.body.username,
         // user argon2 to encode pass, then use argon2.verfy to decode it
         password: await argon2.hash(req.body.password),
-        permission: req.body.permission || 1
+        // for normal signup, user permission will be 1, for admin, it will be 0
+        permission: req.body.permission === undefined ? 1 : 0
     });
     const refreshTokenDoc = models.RefreshToken({
         owner: userDoc.id
@@ -25,7 +26,8 @@ const signup = errorHandler(withTransaction(async (req, res, session) => {
     return {
         id: userDoc.id,
         accessToken,
-        refreshToken
+        refreshToken,
+        permission: userDoc.permission
     };
 }));
 
@@ -51,7 +53,8 @@ const login = errorHandler(withTransaction(async (req, res, session) => {
     return {
         id: userDoc.id,
         accessToken,
-        refreshToken
+        refreshToken,
+        permission: userDoc.permission
     };
 }));
 
