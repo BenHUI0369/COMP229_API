@@ -14,13 +14,14 @@ const signup = errorHandler(withTransaction(async (req, res, session) => {
         permission: req.body.permission === undefined ? 1 : 0
     });
     const refreshTokenDoc = models.RefreshToken({
-        owner: userDoc.id
+        owner: userDoc.id,
+        permission: userDoc.permission
     });
 
     await userDoc.save({session});
     await refreshTokenDoc.save({session});
 
-    const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id);
+    const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id, userDoc.permission);
     const accessToken = createAccessToken(userDoc.id);
 
     return {
@@ -42,12 +43,13 @@ const login = errorHandler(withTransaction(async (req, res, session) => {
     await verifyPassword(userDoc.password, req.body.password);
 
     const refreshTokenDoc = models.RefreshToken({
-        owner: userDoc.id
+        owner: userDoc.id,
+        permission: userDoc.permission
     });
 
     await refreshTokenDoc.save({session});
 
-    const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id);
+    const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id, userDoc.permission);
     const accessToken = createAccessToken(userDoc.id);
 
     return {
@@ -61,13 +63,14 @@ const login = errorHandler(withTransaction(async (req, res, session) => {
 const newRefreshToken = errorHandler(withTransaction(async (req, res, session) => {
     const currentRefreshToken = await validateRefreshToken(req.body.refreshToken);
     const refreshTokenDoc = models.RefreshToken({
-        owner: currentRefreshToken.userId
+        owner: currentRefreshToken.userId,
+        permission: currentRefreshToken.permission
     });
 
     await refreshTokenDoc.save({session});
     await models.RefreshToken.deleteOne({_id: currentRefreshToken.tokenId}, {session});
 
-    const refreshToken = createRefreshToken(currentRefreshToken.userId, refreshTokenDoc.id);
+    const refreshToken = createRefreshToken(currentRefreshToken.userId, refreshTokenDoc.id, refreshTokenDoc.permission);
     const accessToken = createAccessToken(currentRefreshToken.userId);
 
     return {
@@ -108,10 +111,11 @@ function createAccessToken(userId) {
     });
 }
 
-function createRefreshToken(userId, refreshTokenId) {
+function createRefreshToken(userId, refreshTokenId, permission) {
     return jwt.sign({
         userId: userId,
-        tokenId: refreshTokenId
+        tokenId: refreshTokenId,
+        permission: permission
     }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: '30d'
     });
