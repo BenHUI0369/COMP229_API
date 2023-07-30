@@ -69,7 +69,7 @@ let findOne = (req, res) => {
 //update a pokemon identified by the id in the request
 let update = (req, res) => {
     //validate request
-    if(!req.body.description) {
+    if(!req.body) {
         return res.status(400).send({
             message: "Pokemon description can not be empty"
         });
@@ -79,8 +79,8 @@ let update = (req, res) => {
     Pokemon.findByIdAndUpdate(req.params.id, {
         pokemonID: req.body.pokemonID,
         name: req.body.name || "Untitled Pokemon",
-        pokemonType: req.body.type || "Undefined Type",
-        description: req.body.description
+        pokemonType: req.body.pokemonType || "Undefined Type",
+        description: req.body.description || ""
     }, {new: true})
     .then(pokemon => {
         if(!pokemon) {
