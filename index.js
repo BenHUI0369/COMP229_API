@@ -17,9 +17,9 @@ app.use(bodyParser.json());
 // user cors to allow getting data from web server
 app.use(cors({
     // local testing web server
-    //origin: 'http://localhost:4200'
+    origin: ['http://localhost:4200', 'https://pokemonuserdb.netlify.app']
     // onlince deployed web site
-    origin: 'https://pokemonuserdb.netlify.app'
+    //origin: 'https://pokemonuserdb.netlify.app'
 }));
 
 // Configuring the database
